@@ -1,28 +1,28 @@
 import requests
 
-API_KEY = "cd62a9fc9f00e18ef7951a3504866ce6"
+API_KEY = "cd62a9fc9f00e18ef7951a3504866ce6" 
+CITY = "Челябинск"
+URL = f"https://api.openweathermap.org/data/2.5/weather?q={CITY}&appid={API_KEY}&units=metric&lang=ru"
 
-city_name = "Chelyabinsk"
+def get_weather():
+    try:
+        response = requests.get(URL)
+        data = response.json()
 
-url = f"http://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={API_KEY}&units=metric&lang=ru"
-response = requests.get(url)
-if response.status_code == 200:
+        if response.status_code == 200:
+            weather = data["weather"][0]["description"]
+            temp = data["main"]["temp"]
+            humidity = data["main"]["humidity"]
+            pressure = data["main"]["pressure"]
 
-    data = response.json() 
-    city = data["name"]
-    country = data["sys"]["country"]
-    temperature = data["main"]["temp"]
-    feels_like = data["main"]["feels_like"]
-    humidity = data["main"]["humidity"]
-    pressure = data["main"]["pressure"]
-    weather_desc = data["weather"][0]["description"]
-    
+            print(f"Погода в {CITY}: {weather.capitalize()}")
+            print(f"Температура: {temp}°C")
+            print(f"Влажность: {humidity}%")
+            print(f"Давление: {pressure} мм рт. ст.")
+        else:
+            print(f"Ошибка: {data['message']}")
+    except Exception as e:
+        print(f"Ошибка запроса: {e}")
 
-    print(f"Город: {city}, {country}")
-    print(f"Температура: {temperature}°C (ощущается как {feels_like}°C)")
-    print(f"Влажность: {humidity}%")
-    print(f"Давление: {pressure} hPa")
-    print(f"Погода: {weather_desc.capitalize()}")
-
-else:
-    print("Возникла ошибка! Введеные данные не являются коректными!!")
+if __name__ == "__main__":
+    get_weather()
